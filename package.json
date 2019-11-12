@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "le": "node ./dist/index.js",
-    "ble": "npm run build && npm run le"
+    "start": "node ./dist/index.js",
+    "publish": "npm run build && npm run start",
+    "start-dev": "nodemon --config \"./config/nodemon.json\"/"
   },
   "repository": {
     "type": "git",
@@ -19,10 +20,11 @@
   },
   "homepage": "https://github.com/oswagner/coin-collector-network#readme",
   "dependencies": {
-    "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
   },
   "devDependencies": {
-    "@types/node": "^12.7.5"
+    "@types/node": "^12.7.5",
+    "nodemon": "^1.19.4",
+    "ts-node": "^8.5.0"
   }
 }
