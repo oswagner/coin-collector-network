@@ -42,7 +42,7 @@ export class Labyrinth {
    /**
     * @returns Array com vizinhos acima, abaixo, à esquerda e à direita no formato {Point, SpaceType}
     */
-    public getCurrentNeighbors(): {point: Point, spaceType: SpaceType}[] {
+    public currentNeighbors(): {point: Point, spaceType: SpaceType}[] {
         //Array de retorno
         let neighbors:{point: Point, spaceType: SpaceType}[] = []
 
@@ -67,7 +67,14 @@ export class Labyrinth {
      * @param point Move o agente para o ponto especificado
      */
     public moveTo(point: Point) {
-        
+        this.agentPosition = point;
+    }
+
+    /**
+     * @returns Tipo de espaço que o agente se encontra
+     */
+    public agentSpaceType(): SpaceType {
+        return this.spaceTypeAt(this.agentPosition);
     }
 
 }
