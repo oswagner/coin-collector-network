@@ -39,6 +39,9 @@ export class LabyrinthLoader {
         x = 0;
         lineArray.forEach(value => {
 
+          // Remove um caracter especial em fim de linha
+          value = encodeURI(value).replace("%0D", "");
+
           if (value == 'e') {
             entry = { x, y };
             value = '0';
@@ -48,7 +51,7 @@ export class LabyrinthLoader {
           } else if (value == 'm') {
             value = '2';
           }
-          
+
           map[y][x] = +value;
 
           x++;
