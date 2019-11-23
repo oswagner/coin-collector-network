@@ -14,5 +14,6 @@ export class Chromosome {
     public setRandomGeneAt(index: number) {
         if (index >= 0 && index < this.genes.length)
             this.genes[index] = Math.random();
+    }
 
 }
