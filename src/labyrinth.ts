@@ -40,7 +40,7 @@ export class Labyrinth {
     }
 
    /**
-    * @returns Array com vizinhos acima, abaixo, à esquerda e à direita no formato {Point, SpaceType}
+    * @returns Array no formato {Point, SpaceType} com vizinhos acima, abaixo, à esquerda e à direita do agente
     */
     public currentNeighbors(): {point: Point, spaceType: SpaceType}[] {
         //Array de retorno
