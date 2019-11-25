@@ -77,4 +77,10 @@ export class Labyrinth {
         return this.spaceTypeAt(this.agentPosition);
     }
 
+    /**
+     * @returns Distância de Manhattan entre 2 pontos
+     */
+    public manhattanDistance(p1: Point, p2: Point): number {
+        return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+    }
 }
