@@ -16,14 +16,12 @@ export class Labyrinth {
     readonly height: number
     readonly entry: Point;
     readonly exit: Point;
-    agentPosition: Point;
 
     constructor(map: number[][], entry: Point, exit: Point) {
         this.map = map;
         this.width = map.length;
         this.height = map[0].length;
         this.entry = entry;
-        this.agentPosition = entry;
         this.exit = exit;
     }
 
@@ -40,19 +38,17 @@ export class Labyrinth {
     }
 
    /**
-    * @returns Array no formato {Point, SpaceType} com vizinhos acima, abaixo, à esquerda e à direita do agente
+    * @returns Array no formato {Point, SpaceType} com vizinhos acima, abaixo, à esquerda e à direita da posição
+    * informada
     */
-    public currentNeighbors(): {point: Point, spaceType: SpaceType}[] {
+    public getNeighbors(position: Point): {point: Point, spaceType: SpaceType}[] {
         //Array de retorno
         let neighbors:{point: Point, spaceType: SpaceType}[] = []
 
-        //Posição atual
-        let cp = this.agentPosition;
-
-        let up: Point = {x: cp.x, y: cp.y - 1};
-        let down: Point = {x: cp.x, y: cp.y + 1};
-        let left: Point = {x: cp.x - 1, y: cp.y};
-        let right: Point = {x: cp.x + 1, y: cp.y};
+        let up: Point = {x: position.x, y: position.y - 1};
+        let down: Point = {x: position.x, y: position.y + 1};
+        let left: Point = {x: position.x - 1, y: position.y};
+        let right: Point = {x: position.x + 1, y: position.y};
 
         neighbors.push({point: up, spaceType: this.spaceTypeAt(up)});
         neighbors.push({point: down, spaceType: this.spaceTypeAt(down)});
@@ -60,21 +56,6 @@ export class Labyrinth {
         neighbors.push({point: right, spaceType: this.spaceTypeAt(right)});
 
         return neighbors;
-    }
-
-    /**
-     * 
-     * @param point Move o agente para o ponto especificado
-     */
-    public moveTo(point: Point) {
-        this.agentPosition = point;
-    }
-
-    /**
-     * @returns Tipo de espaço que o agente se encontra
-     */
-    public agentSpaceType(): SpaceType {
-        return this.spaceTypeAt(this.agentPosition);
     }
 
     /**
