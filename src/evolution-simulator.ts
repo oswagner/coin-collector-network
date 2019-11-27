@@ -1,5 +1,7 @@
-import { Labyrinth } from "./labyrinth"
+import { Labyrinth, SpaceType } from "./labyrinth"
 import { Chromosome } from "./chromosome"
+import { Network } from "./neural_network/network";
+import { Direction, Agent } from "./agent";
 
 export class EvolutionSimulator {
 
@@ -10,7 +12,7 @@ export class EvolutionSimulator {
     private generationsLimit?: number;
     private mutationChance: number;
 
-    private labyrinth?: Labyrinth;
+    private labyrinth: Labyrinth;
     private stopsWhenConverging: boolean = false;
     // Intervalo de gerações para logar na tela as informações atuais
     private printInterval: number = 1;
@@ -80,8 +82,36 @@ export class EvolutionSimulator {
 
     private applyFitnessFunction() {
         this.population.forEach(chromosome => {
-            chromosome.score = chromosome.genes.reduce((a, b) => { return a + b });
-        })
+
+            const agent = new Agent(this.labyrinth);
+            let agentSpace: SpaceType;
+            let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType+1);
+            let network = new Network(chromosome.genes, preProcessedNeighbors);
+            let nextStepDirection = Direction.Up;
+
+            while(true) {
+                agent.move(Math.floor(Math.random()*4.9));
+                agentSpace = agent.getSpaceType();
+
+                if (agentSpace == SpaceType.Floor) {
+                    chromosome.score += 1;
+                } else if (agentSpace == SpaceType.CoinsBag) {
+                    chromosome.score += 50;
+                } else if (agentSpace == SpaceType.Wall) {
+                    chromosome.score -= 20;
+                    const distanceToExit = this.labyrinth.manhattanDistance(this.labyrinth.exit, agent.getPosition());
+                    if (distanceToExit > 10)
+                        chromosome.score += (10 - distanceToExit) * 10;
+                    break;
+                } else if (agentSpace == SpaceType.Exit) {
+                    chromosome.score += 250;
+                    break;
+                }
+
+                preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType+1);
+                // nextStepDirection = network.run();
+            }
+        });
     }
 
     /**
