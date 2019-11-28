@@ -11,7 +11,7 @@ export class Layer {
   constructor(name: string, weights?: number[]) {
     this.name = name;
     this.weights = weights;
-    console.log(`================================ Cria a Layer ${this.name} ================================`);
+    // console.log(`================================ Cria a Layer ${this.name} ================================`);
     if (weights) {
       this.neurons = this.createNeurons(weights);
     }
@@ -32,7 +32,7 @@ export class Layer {
    */
   public run(inputs: number[]): number[] {
 
-    console.log(`================================ Run a Layer ${this.name} ================================`);
+    // console.log(`================================ Run a Layer ${this.name} ================================`);
 
 
     let output: number[] = [];

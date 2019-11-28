@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const labyrinth_loader_1 = require("./labyrinth-loader");
 const evolution_simulator_1 = require("./evolution-simulator");
 const lab = labyrinth_loader_1.LabyrinthLoader.load('./data/labirinto1_10T2.txt');
-const sim = new evolution_simulator_1.EvolutionSimulator(30, lab, 0.5, 1, 15, true);
+const sim = new evolution_simulator_1.EvolutionSimulator(300, lab, 0.5, 1, 30, true);
 console.log("================================ START SIMULATE ================================");
 sim.run();
 const weights = [

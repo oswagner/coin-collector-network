@@ -88,7 +88,6 @@ export class EvolutionSimulator {
             let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
             let network = new Network("antes do while", chromosome.genes);
             let nextStepDirection = network.run(preProcessedNeighbors);
-            console.log('nextStepDirection ====== ', nextStepDirection);
 
             let steps = 0;
             while (steps < 200) {
