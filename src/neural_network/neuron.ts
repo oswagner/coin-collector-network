@@ -1,35 +1,37 @@
 export class Neuron {
 
-  private _inputs: number[];
-  private _weights: number[];
+  inputs: number[] = [];
+  weights: number[];
 
   private bias: number = 1;
+  private bias_weight: number = 1;
   private euler: number = 2.71828;
 
 
-  constructor(inputs: number[], weights: number[] = []) {
-    this._inputs = inputs;
-    this._weights = weights;
+  /**
+   * Primeira posição do array de pesos é a o peso do bias
+   * */
+
+  constructor(weights: number[] = []) {
+    this.weights = weights;
   }
 
-  public get weights(): number[] {
-    return this._weights;
-  }
-  public set weights(v: number[]) {
-    this._weights = v;
-  }
-
-  public get inputs(): number[] {
-    return this._inputs;
-  }
-
-  public set inputs(v: number[]) {
-    this._inputs = v;
-  }
-
-
-  private activateFunction(result: number) {
-    (1 / (1 + Math.pow(this.euler, -result)));
+  /**
+   * run
+   */
+  public run(inputs: number[]): number {
+    let result: number = 0;
+    const weightBias = this.weights.shift()!;
+    const biasWeight = this.bias * weightBias;
+    for (var i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      const weight = this.weights[i];
+      result += (input * weight);
+    }
+    return this.activateFunction((result + biasWeight));
   }
 
+  private activateFunction(result: number): number {
+    return (1 / (1 + Math.pow(this.euler, -result)));
+  }
 }

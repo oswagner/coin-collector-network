@@ -8,6 +8,16 @@ const sim = new EvolutionSimulator(100, lab, 0.1, 1, 1000, true);
 sim.run();
 
 
-const ag_weights = [1, 2, 3, 4, 5, 6]; // 
+const weights = [
+  1, 0, 1, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 1, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 1, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 1, 0, 1, 0, 0, 1, 0, 1
+];
 const inputs = [1, 3, 4, 3]; // up, down, left, right
-const multiLayerNetwork = new Network(ag_weights, inputs);
+
+const multiLayerNetwork = new Network(weights);
+
+const nextStep = multiLayerNetwork.run(inputs);
+
+
