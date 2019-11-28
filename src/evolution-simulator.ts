@@ -109,10 +109,7 @@ export class EvolutionSimulator {
                 }
 
                 preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
-                // console.log(' preProcessedNeighbors ====== ', preProcessedNeighbors);
                 nextStepDirection = network.run(preProcessedNeighbors);
-                console.log('nextStepDirection ====== ', nextStepDirection);
-                // console.log('nextStepDirection ====== 2', agent.getPosition());
             }
         });
     }
@@ -123,9 +120,10 @@ export class EvolutionSimulator {
     private crossover() {
 
         let elite = this.population.shift()!;
-        let newPopulation: Chromosome[] = [];
+        elite.score = 0;
+        let newPopulation: Chromosome[] = [elite];
 
-        while (true) {
+        while (newPopulation.length < this.populationSize) {
             let fatherIndex = Math.floor(Math.random() * this.population.length);
             let motherIndex = Math.floor(Math.random() * this.population.length);
             while (motherIndex == fatherIndex) {
@@ -137,12 +135,13 @@ export class EvolutionSimulator {
             let children = this.makeChildren(father, mother);
 
             newPopulation.push(children.pop()!);
-            if (newPopulation.length == this.populationSize - 1)
-                break
             newPopulation.push(children.pop()!);
         }
 
-        newPopulation.push(elite);
+        if (newPopulation.length > this.populationSize) {
+            newPopulation.pop();
+        }
+
         this.population = newPopulation;
     }
 

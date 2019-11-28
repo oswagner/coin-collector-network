@@ -16,14 +16,12 @@ export class Neuron {
   constructor(name: string, weights: number[] = []) {
     this.weights = weights;
     this.name = name;
-    console.log(`================================ Cria a neuronio ${this.name} ================================`);
   }
 
   /**
    * run
    */
   public run(inputs: number[]): number {
-    console.log(`================================ Run a neuronio ${this.name} ================================`);
     let result: number = 0;
     const weightBias = this.weights[0];
     const biasWeight = this.bias * weightBias;

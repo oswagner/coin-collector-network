@@ -14,7 +14,6 @@ export class Layer {
     if (weights) {
       this.neurons = this.createNeurons(weights);
     }
-    console.log(`================================ Cria a Layer ${this.name} ================================`);
   }
 
   private createNeurons(weights: number[]): Neuron[] {
@@ -31,7 +30,6 @@ export class Layer {
    * run
    */
   public run(inputs: number[]): number[] {
-    console.log(`================================ Run a Layer ${this.name} ================================`);
 
     let output: number[] = [];
     output = inputs
