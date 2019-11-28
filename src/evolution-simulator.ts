@@ -89,7 +89,8 @@ export class EvolutionSimulator {
             let network = new Network("Rede antes do while", chromosome.genes);
             let nextStepDirection = network.run(preProcessedNeighbors);
 
-            while (true) {
+            let steps = 0;
+            while (steps < 200) {
                 agent.move(nextStepDirection);
                 agentSpace = agent.getSpaceType();
 
@@ -110,6 +111,7 @@ export class EvolutionSimulator {
 
                 preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
                 nextStepDirection = network.run(preProcessedNeighbors);
+                steps++;
             }
         });
     }
