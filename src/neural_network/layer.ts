@@ -4,14 +4,13 @@ export class Layer {
 
   inputs: number[] = [];
   neurons?: Neuron[];
-  weights?: number[];
   name: string;
+  readonly isInputLayer: boolean
 
 
   constructor(name: string, weights?: number[]) {
     this.name = name;
-    this.weights = weights;
-    // console.log(`================================ Cria a Layer ${this.name} ================================`);
+    this.isInputLayer = weights == null;
     if (weights) {
       this.neurons = this.createNeurons(weights);
     }
@@ -31,17 +30,13 @@ export class Layer {
    * run
    */
   public run(inputs: number[]): number[] {
-
-    // console.log(`================================ Run a Layer ${this.name} ================================`);
-
-
-    let output: number[] = [];
-    output = inputs
-    if (this.weights) {
+    if (!this.isInputLayer) {
+      let output: number[] = [];
       for (let [index, neuron] of this.neurons!.entries()) {
         output[index] = neuron.run(inputs);
       }
+      return output;
     }
-    return output;
+    return inputs.slice();
   }
 }

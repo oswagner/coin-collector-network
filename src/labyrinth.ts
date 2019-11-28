@@ -6,7 +6,7 @@ export interface Point {
 export enum SpaceType {
     Floor = 0,
     Wall = 1,
-    CoinsBag = 2,
+    CoinBag = 2,
     Exit = 3
 }
 
@@ -16,13 +16,15 @@ export class Labyrinth {
     readonly height: number
     readonly entry: Point;
     readonly exit: Point;
+    private readonly coinBags: Point[];
 
-    constructor(map: number[][], entry: Point, exit: Point) {
+    constructor(map: number[][], entry: Point, exit: Point, coinBags: Point[]) {
         this.map = map;
         this.width = map.length;
         this.height = map[0].length;
         this.entry = entry;
         this.exit = exit;
+        this.coinBags = coinBags;
     }
 
     /**
@@ -41,21 +43,47 @@ export class Labyrinth {
     * @returns Array no formato {Point, SpaceType} com vizinhos acima, abaixo, à esquerda e à direita da posição
     * informada
     */
-    public getNeighbors(position: Point): {point: Point, spaceType: SpaceType}[] {
+    public getNeighbors(position: Point): SpaceType[] {
         //Array de retorno
-        let neighbors:{point: Point, spaceType: SpaceType}[] = []
+        let neighbors: SpaceType[] = [];
 
         let up: Point = {x: position.x, y: position.y - 1};
         let down: Point = {x: position.x, y: position.y + 1};
         let left: Point = {x: position.x - 1, y: position.y};
         let right: Point = {x: position.x + 1, y: position.y};
 
-        neighbors.push({point: up, spaceType: this.spaceTypeAt(up)});
-        neighbors.push({point: down, spaceType: this.spaceTypeAt(down)});
-        neighbors.push({point: left, spaceType: this.spaceTypeAt(left)});
-        neighbors.push({point: right, spaceType: this.spaceTypeAt(right)});
+        neighbors.push(this.spaceTypeAt(up));
+        neighbors.push(this.spaceTypeAt(down));
+        neighbors.push(this.spaceTypeAt(left));
+        neighbors.push(this.spaceTypeAt(right));
 
         return neighbors;
+    }
+
+    /**
+     * Método para o agente "pegar" o saco de moedas. Uma vez que ele pega,
+     * o espaço muda para tipo Floor
+     * 
+     * @param point Posição do saco de moedas
+     * 
+     * @returns true se o espaço realmente conter um saco de moedas, caso contrário
+     * retorna false
+     */
+    public pickCoinBagAt(point: Point): boolean {
+        if (this.spaceTypeAt(point) == SpaceType.CoinBag) {
+            this.map[point.y][point.x] = SpaceType.Floor;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Reseta os sacos de moeda no labirinto
+     */
+    public resetCoinBags() {
+        this.coinBags.forEach(coinBag => {
+            this.map[coinBag.y][coinBag.x] = SpaceType.CoinBag;
+        })
     }
 
     /**

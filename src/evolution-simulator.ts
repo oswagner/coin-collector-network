@@ -1,4 +1,4 @@
-import { Labyrinth, SpaceType } from "./labyrinth"
+import { Labyrinth, SpaceType, Point } from "./labyrinth"
 import { Chromosome } from "./chromosome"
 import { Network } from "./neural_network/network";
 import { Direction, Agent } from "./agent";
@@ -69,8 +69,11 @@ export class EvolutionSimulator {
                 }
             }
 
-            if (this.currentGeneration % this.printInterval == 0)
+            if (this.currentGeneration % this.printInterval == 0) {
                 console.log("Geração " + this.currentGeneration + ", melhor score = " + this.population[0].score);
+                // console.log("Seus genes são: " + this.population[0].genes);
+                
+            }
 
             this.crossover();
             this.mutate();
@@ -82,42 +85,58 @@ export class EvolutionSimulator {
 
     private applyFitnessFunction() {
         this.population.forEach(chromosome => {
-
-            const agent = new Agent(this.labyrinth);
-            let agentSpace: SpaceType;
-            let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
-            let network = new Network("antes do while", chromosome.genes);
-            let nextStepDirection = network.run(preProcessedNeighbors);
-
-            let steps = 0;
-            while (steps < 200) {
-                agent.move(nextStepDirection);
-                agentSpace = agent.getSpaceType();
-
-                if (agentSpace == SpaceType.Floor) {
-                    chromosome.score += 1;
-                } else if (agentSpace == SpaceType.CoinsBag) {
-                    chromosome.score += 50;
-                } else if (agentSpace == SpaceType.Wall) {
-                    chromosome.score -= 20;
-                    const distanceToExit = this.labyrinth.manhattanDistance(this.labyrinth.exit, agent.getPosition());
-                    if (distanceToExit > 10)
-                        chromosome.score += (10 - distanceToExit) * 10;
-                    break;
-                } else if (agentSpace == SpaceType.Exit) {
-                    chromosome.score += 250;
-                    console.log("SAI");
-
-                    break;
-                }
-
-                preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
-                // //console.log(' preProcessedNeighbors ====== ', preProcessedNeighbors);
-                nextStepDirection = network.run(preProcessedNeighbors);
-                //console.log('nextStepDirection ====== ', nextStepDirection);
-                // //console.log('nextStepDirection ====== 2', agent.getPosition());
-            }
+            this.testChromosome(chromosome);
         });
+    }
+
+    private testChromosome(chromosome: Chromosome) {
+
+        const agent = new Agent(this.labyrinth);
+        let agentSpace: SpaceType;
+        let preProcessedNeighbors = agent.getNeighbors().map(n => (n + 1)/10);
+        let network = new Network("antes do while", chromosome.genes);
+        let nextStepDirection = network.run(preProcessedNeighbors.slice());
+        let walkedSpaces = new Set<Point>();
+        let path = [];
+
+        let step = 0;
+        
+        while (step < 10) {
+            agent.move(nextStepDirection);
+            agentSpace = agent.getSpaceType();
+            path.push(agent.getPosition().x + ", " + agent.getPosition().y + "  |  " + agent.getSpaceType() + "  |  " + preProcessedNeighbors);
+
+            if (agentSpace == SpaceType.Floor) {
+                if (!walkedSpaces.has(agent.getPosition()))
+                    chromosome.score += 1;
+            } else if (agentSpace == SpaceType.CoinBag) {
+                if (!walkedSpaces.has(agent.getPosition())){
+                    chromosome.score += 50;
+                    this.labyrinth.pickCoinBagAt(agent.getPosition());
+                }
+            } else if (agentSpace == SpaceType.Wall) {
+                chromosome.score -= 20;
+                const distanceToExit = this.labyrinth.manhattanDistance(this.labyrinth.exit, agent.getPosition());
+                if (distanceToExit < 10)
+                    chromosome.score += (10 - distanceToExit) * 10;
+                break;
+            } else if (agentSpace == SpaceType.Exit) {
+                chromosome.score += 250;
+                console.log("ACHEI A SAIDA");
+                break;
+            }
+
+            walkedSpaces.add(agent.getPosition());
+            preProcessedNeighbors = agent.getNeighbors().map(n => (n + 1)/10);
+            nextStepDirection = network.run(preProcessedNeighbors.slice());
+            step++;
+        }
+        
+        // if (path.length > 1) {
+        //     console.log("Caminhei bastante, olha só");
+        //     path.forEach(p => console.log(p));
+        // }
+        this.labyrinth.resetCoinBags();
     }
 
     /**
@@ -176,13 +195,21 @@ export class EvolutionSimulator {
 
 
     /**
-     * Dá a chance de ocorrer mutação em 1 gene de 1 cromossomo
+     * Dá a chance de ocorrer mutação em 1 gene em 20% da população
      */
     private mutate() {
-        if (Math.random() <= this.mutationChance) {
-            let randomChromosome = Math.floor(Math.random() * this.populationSize);
-            let randomGene = Math.floor(Math.random() * this.genesCount);
-            this.population[randomChromosome].setRandomGeneAt(randomGene);
+        if (Math.random() >= this.mutationChance) {
+            let tempArray = this.population;
+
+            let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.2))
+
+            for (let i = 0; i < mutationsCount; i++) {
+                const randomIndex = 1 + Math.floor(Math.random() * tempArray.length - 1);
+                const randomChromosome = this.population[randomIndex];
+                tempArray.splice(randomIndex, 1)
+                const randomGene = Math.floor(Math.random() * this.genesCount);
+                randomChromosome.setRandomGeneAt(randomGene);
+            }
         }
     }
 

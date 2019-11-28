@@ -16,7 +16,7 @@ export class Agent {
         this.position = { x: labyrinth.entry.x, y: labyrinth.entry.y }
     }
 
-    public getNeighbors(): { point: Point, spaceType: SpaceType }[] {
+    public getNeighbors(): SpaceType[] {
         return this.labyrinth.getNeighbors(this.position);
     }
 

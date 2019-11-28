@@ -4,11 +4,9 @@ import { Network } from "./neural_network/network";
 import { Chromosome } from "./chromosome";
 
 const lab = LabyrinthLoader.load('./data/labirinto1_10T2.txt');
-const sim = new EvolutionSimulator(300, lab, 0.5, 1, 30, true);
-console.log("================================ START SIMULATE ================================");
+const sim = new EvolutionSimulator(100, lab, 0.1, 1, 1000, false);
 
 sim.run();
-
 
 const weights = [
   1, 0, 1, 0, 1, 1, 0, 0, 0.3, 0.5,

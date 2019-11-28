@@ -27,6 +27,7 @@ export class LabyrinthLoader {
     let y = -1;
     let entry: Point = { x: 0, y: 0 };
     let exit: Point = { x: 0, y: 0 };
+    let coinBags: Point[] = [];
 
 
     lines.forEach((line) => {
@@ -50,6 +51,7 @@ export class LabyrinthLoader {
             value = '3';
           } else if (value == 'm') {
             value = '2';
+            coinBags.push({x, y});
           }
 
           map[y][x] = +value;
@@ -60,7 +62,7 @@ export class LabyrinthLoader {
       y++;
     });
 
-    let lab = new Labyrinth(map, entry, exit);
+    let lab = new Labyrinth(map, entry, exit, coinBags);
     return lab;
   }
 }
