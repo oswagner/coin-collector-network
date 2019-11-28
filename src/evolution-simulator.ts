@@ -86,8 +86,9 @@ export class EvolutionSimulator {
             const agent = new Agent(this.labyrinth);
             let agentSpace: SpaceType;
             let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
-            let network = new Network("Rede antes do while", chromosome.genes);
+            let network = new Network("antes do while", chromosome.genes);
             let nextStepDirection = network.run(preProcessedNeighbors);
+            console.log('nextStepDirection ====== ', nextStepDirection);
 
             let steps = 0;
             while (steps < 200) {
@@ -106,12 +107,16 @@ export class EvolutionSimulator {
                     break;
                 } else if (agentSpace == SpaceType.Exit) {
                     chromosome.score += 250;
+                    console.log("SAI");
+
                     break;
                 }
 
                 preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
+                // //console.log(' preProcessedNeighbors ====== ', preProcessedNeighbors);
                 nextStepDirection = network.run(preProcessedNeighbors);
-                steps++;
+                //console.log('nextStepDirection ====== ', nextStepDirection);
+                // //console.log('nextStepDirection ====== 2', agent.getPosition());
             }
         });
     }
