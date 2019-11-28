@@ -86,7 +86,7 @@ export class EvolutionSimulator {
             const agent = new Agent(this.labyrinth);
             let agentSpace: SpaceType;
             let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
-            let network = new Network(chromosome.genes);
+            let network = new Network("Rede antes do while", chromosome.genes);
             let nextStepDirection = network.run(preProcessedNeighbors);
 
             while (true) {

@@ -40,7 +40,7 @@ export class Network {
       THElargest = exitLayerOutput[3];
     }
 
-    // console.log("THElargest", THElargest);
+    console.log("THElargest", THElargest);
     // console.log("valor 0= ", exitLayerOutput[0]);
     // console.log("valor 1= ", exitLayerOutput[1]);
     // console.log("valor 2= ", exitLayerOutput[2]);
