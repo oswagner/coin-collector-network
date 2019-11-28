@@ -82,7 +82,6 @@ export class EvolutionSimulator {
         }
     }
 
-
     private applyFitnessFunction() {
         this.population.forEach(chromosome => {
             this.testChromosome(chromosome);
@@ -94,7 +93,7 @@ export class EvolutionSimulator {
         const agent = new Agent(this.labyrinth);
         let agentSpace: SpaceType;
         let preProcessedNeighbors = agent.getNeighbors().map(n => (n + 1)/10);
-        let network = new Network("antes do while", chromosome.genes);
+        let network = new Network("antes do while", chromosome.genes.slice());
         let nextStepDirection = network.run(preProcessedNeighbors.slice());
         let walkedSpaces = new Set<Point>();
         let path = [];
@@ -118,7 +117,7 @@ export class EvolutionSimulator {
                 chromosome.score -= 20;
                 const distanceToExit = this.labyrinth.manhattanDistance(this.labyrinth.exit, agent.getPosition());
                 if (distanceToExit < 10)
-                    chromosome.score += (10 - distanceToExit) * 10;
+                    chromosome.score += (10 - distanceToExit) * 15;
                 break;
             } else if (agentSpace == SpaceType.Exit) {
                 chromosome.score += 250;
@@ -146,9 +145,9 @@ export class EvolutionSimulator {
 
         let elite = this.population.shift()!;
         elite.score = 0;
-        let newPopulation: Chromosome[] = [elite];
+        let newPopulation: Chromosome[] = [];
 
-        while (newPopulation.length < this.populationSize) {
+        while (newPopulation.length < this.populationSize - 1) {
             let fatherIndex = Math.floor(Math.random() * this.population.length);
             let motherIndex = Math.floor(Math.random() * this.population.length);
             while (motherIndex == fatherIndex) {
@@ -168,6 +167,7 @@ export class EvolutionSimulator {
         }
 
         this.population = newPopulation;
+        this.population.unshift(elite);
     }
 
     /**
@@ -195,16 +195,16 @@ export class EvolutionSimulator {
 
 
     /**
-     * Dá a chance de ocorrer mutação em 1 gene em 20% da população
+     * Dá a chance de ocorrer mutação em 1 gene em 10% da população
      */
     private mutate() {
-        if (Math.random() >= this.mutationChance) {
+        if (Math.random() <= this.mutationChance) {
             let tempArray = this.population;
 
-            let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.2))
+            let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.1))
 
             for (let i = 0; i < mutationsCount; i++) {
-                const randomIndex = 1 + Math.floor(Math.random() * tempArray.length - 1);
+                let randomIndex = Math.max(1, Math.floor(Math.random() * tempArray.length));
                 const randomChromosome = this.population[randomIndex];
                 tempArray.splice(randomIndex, 1)
                 const randomGene = Math.floor(Math.random() * this.genesCount);

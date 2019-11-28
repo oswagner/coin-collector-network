@@ -25,9 +25,10 @@ export class Neuron {
     let result: number = 0;
     const weightBias = this.weights[0];
     const biasWeight = this.bias * weightBias;
-    for (var i = 1; i < inputs.length; i++) {
-      const input = inputs[i - 1];
-      const weight = this.weights[i];
+    // const biasWeight = 1;
+    for (var i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      const weight = this.weights[i+1];
       result += (input * weight);
     }
     return this.activateFunction((result + biasWeight));
