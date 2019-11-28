@@ -1,9 +1,9 @@
 import { Point, Labyrinth, SpaceType } from "./labyrinth"
 
 export enum Direction {
-    Up, 
-    Down, 
-    Left, 
+    Up,
+    Down,
+    Left,
     Right
 }
 
@@ -13,10 +13,10 @@ export class Agent {
 
     constructor(labyrinth: Labyrinth) {
         this.labyrinth = labyrinth;
-        this.position = {x: labyrinth.entry.x, y: labyrinth.entry.y}
+        this.position = { x: labyrinth.entry.x, y: labyrinth.entry.y }
     }
 
-    public getNeighbors(): {point: Point, spaceType: SpaceType}[] {
+    public getNeighbors(): { point: Point, spaceType: SpaceType }[] {
         return this.labyrinth.getNeighbors(this.position);
     }
 

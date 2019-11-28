@@ -9,8 +9,8 @@ export class Chromosome {
      * de genes com esse tamanho e com valores aleatórios. Caso seja number[], atribui
      * esse mesmo array a this.genes
      */
-    constructor(genes: number | number[] ) {
-        if (typeof(genes) === "number" ) {
+    constructor(genes: number | number[]) {
+        if (typeof (genes) === "number") {
             this.genes = new Array(genes);
             for (let i = 0; i < genes; i++)
                 this.setRandomGeneAt(i);

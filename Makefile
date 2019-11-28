@@ -1,4 +1,6 @@
 .PHONY: up start build
 
 run:
-	npm run start-dev
+	npm run publish
+
+	# "start-dev": "nodemon --config \"./config/nodemon.json\"/"

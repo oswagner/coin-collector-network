@@ -6,8 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node ./dist/index.js",
-    "publish": "npm run build && npm run start",
-    "start-dev": "nodemon --config \"./config/nodemon.json\"/"
+    "publish": "npm run build && npm run start"
   },
   "repository": {
     "type": "git",

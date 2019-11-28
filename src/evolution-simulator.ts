@@ -5,7 +5,7 @@ import { Direction, Agent } from "./agent";
 
 export class EvolutionSimulator {
 
-    private readonly genesCount = 32;
+    private readonly genesCount = 40;
 
     private population: Chromosome[];
     private populationSize: number;
@@ -38,7 +38,7 @@ export class EvolutionSimulator {
         for (let i = 0; i < populationSize; i++)
             this.population.push(new Chromosome(this.genesCount));
 
-        if (stopsWhenConverging) 
+        if (stopsWhenConverging)
             this.bestScores = new Array(10);
     }
 
@@ -85,12 +85,12 @@ export class EvolutionSimulator {
 
             const agent = new Agent(this.labyrinth);
             let agentSpace: SpaceType;
-            let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType+1);
-            let network = new Network(chromosome.genes, preProcessedNeighbors);
-            let nextStepDirection = Direction.Up;
+            let preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
+            let network = new Network(chromosome.genes);
+            let nextStepDirection = network.run(preProcessedNeighbors);
 
-            while(true) {
-                agent.move(Math.floor(Math.random()*4.9));
+            while (true) {
+                agent.move(nextStepDirection);
                 agentSpace = agent.getSpaceType();
 
                 if (agentSpace == SpaceType.Floor) {
@@ -108,8 +108,11 @@ export class EvolutionSimulator {
                     break;
                 }
 
-                preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType+1);
-                // nextStepDirection = network.run();
+                preProcessedNeighbors = agent.getNeighbors().map(n => n.spaceType + 1);
+                // console.log(' preProcessedNeighbors ====== ', preProcessedNeighbors);
+                nextStepDirection = network.run(preProcessedNeighbors);
+                console.log('nextStepDirection ====== ', nextStepDirection);
+                // console.log('nextStepDirection ====== 2', agent.getPosition());
             }
         });
     }

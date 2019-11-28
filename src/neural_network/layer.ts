@@ -5,27 +5,34 @@ export class Layer {
   inputs: number[] = [];
   neurons?: Neuron[];
   weights?: number[];
+  name: string;
 
 
-  constructor(weights?: number[]) {
+  constructor(name: string, weights?: number[]) {
+    this.name = name;
     this.weights = weights;
     if (weights) {
       this.neurons = this.createNeurons(weights);
     }
+    console.log(`================================ Cria a Layer ${this.name} ================================`);
   }
 
   private createNeurons(weights: number[]): Neuron[] {
-    let neurons: Neuron[] = [];
-    for (var i = 5; i < weights.length - 5; i += 5) {
-      neurons.push(new Neuron(weights.slice(i - 5, i)));
-    }
-    return neurons;
+    return [
+      new Neuron("cima", weights.slice(0, 5)),
+      new Neuron("baixo", weights.slice(5, 10)),
+      new Neuron("esquerda", weights.slice(10, 15)),
+      new Neuron("direita", weights.slice(15, 20))
+    ]
+
   }
 
   /**
    * run
    */
   public run(inputs: number[]): number[] {
+    console.log(`================================ Run a Layer ${this.name} ================================`);
+
     let output: number[] = [];
     output = inputs
     if (this.weights) {
