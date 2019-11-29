@@ -158,8 +158,7 @@ export class EvolutionSimulator {
             let mother = this.population[motherIndex];
             let children = this.makeChildren(father, mother);
 
-            newPopulation.push(children.pop()!);
-            newPopulation.push(children.pop()!);
+            newPopulation.push(children);
         }
 
         if (newPopulation.length > this.populationSize) {
@@ -175,22 +174,16 @@ export class EvolutionSimulator {
      * @param father cromossomo pai
      * @param mother cromossomo mãe
      * 
-     * @returns um array com 2 cromossomos gerados usando máscara binária entre o pai e a mãe
+     * @returns um cromosomo a partir da média aritmética dos valores dos genes da mãe e do pai
      */
-    private makeChildren(father: Chromosome, mother: Chromosome): Chromosome[] {
-        let child1: number[] = [];
-        let child2: number[] = [];
+    private makeChildren(father: Chromosome, mother: Chromosome): Chromosome {
+        let child: number[] = [];
+
         for (let index = 0; index < this.genesCount; index++) {
-            let bit = Math.random() > 0.5;
-            if (bit) {
-                child1.push(father.genes[index]);
-                child2.push(mother.genes[index]);
-            } else {
-                child1.push(mother.genes[index]);
-                child2.push(father.genes[index]);
-            }
+            child.push((father.genes[index] + mother.genes[index]) / 2);
         }
-        return [new Chromosome(child1), new Chromosome(child2)];
+
+        return new Chromosome(child);
     }
 
 
