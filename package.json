@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/oswagner/coin-collector-network#readme",
   "dependencies": {
+    "chalk": "^3.0.0",
     "typescript": "^3.6.3"
   },
   "devDependencies": {

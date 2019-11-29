@@ -18,6 +18,7 @@ export class EvolutionSimulator {
     private printInterval: number = 1;
     private bestScores?: number[];
     private currentGeneration: number = 0;
+    private pathToExit?: Point[]
 
     constructor(
         populationSize: number,
@@ -80,15 +81,22 @@ export class EvolutionSimulator {
 
             this.currentGeneration++;
         }
+
+        this.labyrinth.printPath();
+
+        if (this.pathToExit != null) {
+            console.log("Último caminho encontrado:")
+            this.labyrinth.printPath(this.pathToExit);
+        }
     }
 
     private applyFitnessFunction() {
         this.population.forEach(chromosome => {
-            this.testChromosome(chromosome);
+            this.assignScore(chromosome);
         });
     }
 
-    private testChromosome(chromosome: Chromosome) {
+    private assignScore(chromosome: Chromosome) {
 
         const agent = new Agent(this.labyrinth);
         let agentSpace: SpaceType;
@@ -100,19 +108,19 @@ export class EvolutionSimulator {
 
         let step = 0;
         
-        while (step < 100) {
+        while (step < 50) {
             agent.move(nextStepDirection);
             agentSpace = agent.getSpaceType();
             path.push(agent.getPosition().x + ", " + agent.getPosition().y + "  |  " + agent.getSpaceType() + "  |  " + preProcessedNeighbors);
 
             if (agentSpace == SpaceType.Floor) {
-                if (!walkedSpaces.has(agent.getPosition()))
+                // if (!walkedSpaces.has(agent.getPosition()))
                     chromosome.score += 1;
             } else if (agentSpace == SpaceType.CoinBag) {
-                if (!walkedSpaces.has(agent.getPosition())){
-                    chromosome.score += 50;
+                // if (!walkedSpaces.has(agent.getPosition())){
+                    chromosome.score += 300;
                     this.labyrinth.pickCoinBagAt(agent.getPosition());
-                }
+                // }
             } else if (agentSpace == SpaceType.Wall) {
                 chromosome.score -= 20;
                 const distanceToExit = this.labyrinth.manhattanDistance(this.labyrinth.exit, agent.getPosition());
@@ -121,13 +129,14 @@ export class EvolutionSimulator {
                 break;
             } else if (agentSpace == SpaceType.Exit) {
                 chromosome.score += 250;
-                console.log("PATH -------", path)
-                console.log("SCORE -------", chromosome.score)
-                console.log("ACHEI A SAIDA");
+                this.pathToExit = Array.from(walkedSpaces);
+                // console.log("PATH -------", path)
+                // console.log("SCORE -------", chromosome.score)
+                // console.log("ACHEI A SAIDA");
                 break;
             }
 
-            walkedSpaces.add(agent.getPosition());
+            walkedSpaces.add({x: agent.getPosition().x, y: agent.getPosition().y});
             preProcessedNeighbors = agent.getNeighbors().map(n => (n + 1)/10);
             nextStepDirection = network.run(preProcessedNeighbors.slice());
             step++;
@@ -194,28 +203,12 @@ export class EvolutionSimulator {
      */
     private mutate() {
         if (Math.random() <= this.mutationChance) {
-            for (let chromosome of this.population) {
-                chromosome.genes.forEach((gene, index) => {
-                    if (index != 0) {
-                        chromosome.genes[index] = Math.random();
-                    }
+            this.population.forEach((chromosome, i) => {
+                if (i != 0)
+                chromosome.genes.forEach((gene, j) => {
+                    chromosome.genes[j] = Math.random();
                 });
-            }
-            // let tempArray = this.population;
-
-            // let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.5))
-
-            // for (let i = 0; i < mutationsCount; i++) {
-            //     let randomIndex = Math.max(1, Math.floor(Math.random() * tempArray.length));
-            //     for (let j = 0; j < randomIndex; j++) {
-            //         const randomChromosome = this.population[randomIndex];
-            //         const randomGene = Math.floor(Math.random() * this.genesCount);
-            //         randomChromosome.setRandomGeneAt(randomGene);
-            //     }
-            //     tempArray.splice(randomIndex, 1)
-            // }
-
-
+            });
         }
     }
 

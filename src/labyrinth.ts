@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 export interface Point {
     x: number;
     y: number;
@@ -91,5 +93,33 @@ export class Labyrinth {
      */
     public manhattanDistance(p1: Point, p2: Point): number {
         return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+    }
+
+    public printPath(path?: Point[]) {
+
+        for (let y = 0; y < this.map.length; y++) {
+            let line = "";
+            for (let x = 0; x < this.map[0].length; x++) {
+                if (this.entry.x == x && this.entry.y == y)
+                    line += chalk.green("██");
+                else if (this.exit.x == x && this.exit.y == y)
+                    line += chalk.red("██");
+                else if (path != null && this.containsPoint(path!, x, y))
+                    line += this.map[y][x] == 0 ? chalk.blue("██") : chalk.magenta("██");
+                else if (this.map[y][x] == 2)
+                    line += chalk.yellow("██")
+                else
+                    line += this.map[y][x] == 0 ? "  " : "██";
+            }
+            console.log(line);
+        }
+    }
+
+    private containsPoint(array: Point[], x: number, y: number): boolean {
+        for (let i = 0; i < array.length; i++)
+            if (array[i].x == x && array[i].y == y)
+                return true
+
+        return false
     }
 }
