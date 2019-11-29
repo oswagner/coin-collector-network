@@ -100,7 +100,7 @@ export class EvolutionSimulator {
 
         let step = 0;
         
-        while (step < 10) {
+        while (step < 100) {
             agent.move(nextStepDirection);
             agentSpace = agent.getSpaceType();
             path.push(agent.getPosition().x + ", " + agent.getPosition().y + "  |  " + agent.getSpaceType() + "  |  " + preProcessedNeighbors);
@@ -121,6 +121,8 @@ export class EvolutionSimulator {
                 break;
             } else if (agentSpace == SpaceType.Exit) {
                 chromosome.score += 250;
+                console.log("PATH -------", path)
+                console.log("SCORE -------", chromosome.score)
                 console.log("ACHEI A SAIDA");
                 break;
             }
@@ -192,17 +194,28 @@ export class EvolutionSimulator {
      */
     private mutate() {
         if (Math.random() <= this.mutationChance) {
-            let tempArray = this.population;
-
-            let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.1))
-
-            for (let i = 0; i < mutationsCount; i++) {
-                let randomIndex = Math.max(1, Math.floor(Math.random() * tempArray.length));
-                const randomChromosome = this.population[randomIndex];
-                tempArray.splice(randomIndex, 1)
-                const randomGene = Math.floor(Math.random() * this.genesCount);
-                randomChromosome.setRandomGeneAt(randomGene);
+            for (let chromosome of this.population) {
+                chromosome.genes.forEach((gene, index) => {
+                    if (index != 0) {
+                        chromosome.genes[index] = Math.random();
+                    }
+                });
             }
+            // let tempArray = this.population;
+
+            // let mutationsCount = Math.max(1, Math.floor(tempArray.length * 0.5))
+
+            // for (let i = 0; i < mutationsCount; i++) {
+            //     let randomIndex = Math.max(1, Math.floor(Math.random() * tempArray.length));
+            //     for (let j = 0; j < randomIndex; j++) {
+            //         const randomChromosome = this.population[randomIndex];
+            //         const randomGene = Math.floor(Math.random() * this.genesCount);
+            //         randomChromosome.setRandomGeneAt(randomGene);
+            //     }
+            //     tempArray.splice(randomIndex, 1)
+            // }
+
+
         }
     }
 
